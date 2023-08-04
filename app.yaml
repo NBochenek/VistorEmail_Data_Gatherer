@@ -1,0 +1,6 @@
+runtime: python39  # replace with your Python version
+instance_class: F1
+entrypoint: gunicorn -b :$PORT main:app
+
+env_variables:
+  SECRET_KEY: "your-secret-key"
