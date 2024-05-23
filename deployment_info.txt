@@ -1,0 +1,5 @@
+gcloud config get-value project
+
+gcloud config set project visitoremail-data
+
+gcloud functions deploy get_daily_data --runtime python39 --trigger-http --allow-unauthenticated --gen2

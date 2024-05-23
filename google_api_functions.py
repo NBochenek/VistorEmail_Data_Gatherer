@@ -69,10 +69,32 @@ def write_dict_to_sheet(sheet_id, data, range_start):
     ).execute()
     print(f"{result.get('updatedCells')} cells updated.")
 
+#Extract Historical data from sheet. Only necessary if we need to reduce API queries.
+def extract_sheet_data(sheet_id, range):
+    creds = get_credentials()
+    service = build('sheets', 'v4', credentials=creds)
+
+    # Read the data from the sheet
+    result = service.spreadsheets().values().get(
+        spreadsheetId=sheet_id, range=range
+    ).execute()
+    values = result.get('values', [])
+
+    # Convert the rows to dictionaries
+    dictionaries = []
+    if values:
+        for row in values:
+            # Ensure there's enough columns in this row
+            if len(row) >= 2:
+                # Map the first column to the second as key-value pairs
+                dictionaries.append({row[0]: row[1]})
+    else:
+        print('No data found.')
+
+    return dictionaries
+
 
 if __name__ == "__main__":
-    test = find_zeros_in_column("17bUzAyp989BH3mFF3MsR_ehwHxALi1SW8kAB4y7ZFN4")
-    test = list(test.keys())
+    test = extract_sheet_data("17bUzAyp989BH3mFF3MsR_ehwHxALi1SW8kAB4y7ZFN4", "H:I")
     print(test)
-    test_str = "\n".join(test)
-    print(test_str)
+
